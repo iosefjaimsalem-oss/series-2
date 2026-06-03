@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series · V4</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0ede8; color: #1a1714; font-family: 'Bricolage Grotesque', sans-serif; min-height: 100vh; }
+
+.page { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+.header { padding: 44px 0 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+.title { font-size: clamp(36px,7vw,60px); font-weight: 800; letter-spacing: -2px; line-height: 0.95; }
+.title span { color: #c9a96e; }
+.subtitle { font-size: 12px; color: #a09880; letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
+
+.btn-add {
+  background: #1a1714; color: #fff; border: none; border-radius: 50px;
+  padding: 12px 22px; font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 7px;
+  transition: background 0.15s;
+}
+.btn-add:hover { background: #333; }
+
+/* STATS */
+.stats { display: flex; gap: 0; margin-bottom: 28px; background: #fff; border-radius: 16px; border: 1px solid #e5e0d8; overflow: hidden; }
+.stat { flex: 1; padding: 16px; border-right: 1px solid #e5e0d8; text-align: center; }
+.stat:last-child { border-right: none; }
+.stat-n { font-size: 26px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+.stat-n.g { color: #2d8653; }
+.stat-n.b { color: #2060b0; }
+.stat-n.a { color: #b07820; }
+.stat-l { font-size: 10px; color: #a09880; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+/* TOOLBAR */
+.toolbar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.search-input {
+  flex: 1; min-width: 160px;
+  background: #fff; border: 1px solid #e5e0d8; border-radius: 50px;
+  padding: 10px 18px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 13px;
+  color: #1a1714; outline: none;
+}
+.search-input:focus { border-color: #c9a96e; }
+.search-input::placeholder { color: #c0b8a8; }
+.sort-sel {
+  background: #fff; border: 1px solid #e5e0d8; border-radius: 50px;
+  padding: 10px 16px; font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px; color: #1a1714; outline: none; cursor: pointer;
+}
+
+/* PILLS */
+.pills { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.pill {
+  font-size: 13px; font-weight: 600; padding: 7px 18px; border-radius: 50px;
+  border: 1px solid #e5e0d8; background: #fff; color: #a09880; cursor: pointer;
+  transition: all 0.15s;
+}
+.pill:hover { border-color: #c9a96e; color: #1a1714; }
+.pill.active { background: #1a1714; border-color: #1a1714; color: #fff; }
+
+/* LIST */
+.list { display: flex; flex-direction: column; gap: 6px; }
+
+.row {
+  background: #fff; border: 1px solid #e5e0d8; border-radius: 14px;
+  padding: 14px 18px;
+  display: grid; grid-template-columns: 32px 1fr auto auto auto;
+  gap: 14px; align-items: center;
+  transition: box-shadow 0.15s;
+  animation: up 0.22s ease both;
+}
+.row:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.07); border-color: #d8d2c8; }
+
+@keyframes up { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+.row-n { font-size: 12px; font-weight: 700; color: #d0c8b8; text-align: center; }
+.row-name { font-size: 14px; font-weight: 700; }
+.row-genre { font-size: 11px; color: #a09880; margin-top: 3px; }
+
+.stars { display: flex; gap: 2px; }
+.star { font-size: 14px; cursor: pointer; color: #e8e3da; transition: color 0.1s; user-select: none; }
+.star.on { color: #c9a96e; }
+.star:hover { color: #c9a96e; }
+
+.note-btn {
+  background: #f8f5f0; border: 1px solid #e5e0d8; border-radius: 50px;
+  color: #a09880; font-size: 11px; font-weight: 600; padding: 5px 12px;
+  cursor: pointer; font-family: 'Bricolage Grotesque', sans-serif;
+  max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: all 0.15s;
+}
+.note-btn:hover { border-color: #c9a96e; color: #1a1714; }
+.note-btn.has { color: #666; }
+
+.sw { position: relative; }
+.sbadge {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  padding: 5px 12px; border-radius: 50px; white-space: nowrap;
+}
+.sbadge.vista     { background: #e8f5ee; color: #1e7a45; }
+.sbadge.viendo    { background: #e8eef8; color: #1a4fa0; }
+.sbadge.pendiente { background: #f5f0e8; color: #8a6520; }
+.ssh { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+
+/* POPUP */
+.ov { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:200; align-items:center; justify-content:center; }
+.ov.open { display:flex; }
+.pop { background:#fff; border-radius:20px; padding:1.75rem; width:360px; max-width:92vw; box-shadow:0 20px 60px rgba(0,0,0,0.15); }
+.pop h3 { font-size:20px; font-weight:800; letter-spacing:-0.5px; margin-bottom:1.2rem; }
+.f { display:flex; flex-direction:column; gap:4px; margin-bottom:.9rem; }
+.f label { font-size:10px; font-weight:700; color:#a09880; letter-spacing:1.5px; text-transform:uppercase; }
+.f input,.f select,.f textarea { border:1px solid #e5e0d8; border-radius:10px; background:#f8f5f0; padding:9px 12px; color:#1a1714; font-family:'Bricolage Grotesque',sans-serif; font-size:13px; outline:none; width:100%; transition:border-color .2s; }
+.f input:focus,.f select:focus,.f textarea:focus { border-color:#c9a96e; }
+.f textarea { resize:none; height:68px; }
+.pb { display:flex; gap:8px; justify-content:flex-end; margin-top:1.1rem; }
+.bc { background:none; border:1px solid #e5e0d8; border-radius:50px; color:#a09880; padding:8px 20px; font-family:'Bricolage Grotesque',sans-serif; font-size:13px; cursor:pointer; }
+.bo { background:#1a1714; border:none; border-radius:50px; color:#fff; padding:8px 20px; font-family:'Bricolage Grotesque',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+.empty { padding:3rem; text-align:center; color:#a09880; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div>
+      <div class="title">Historial<br>de <span>Series</span></div>
+      <div class="subtitle">Iosi &amp; Pire</div>
+    </div>
+    <button class="btn-add" onclick="openAdd()">＋ Agregar</button>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="toolbar">
+    <input class="search-input" id="search" placeholder="Buscar…" oninput="render()">
+    <select class="sort-sel" id="sortSel" onchange="render()">
+      <option value="default">Orden original</option>
+      <option value="name">A → Z</option>
+      <option value="rating">Mejor rating</option>
+      <option value="status">Por estado</option>
+    </select>
+  </div>
+  <div class="pills">
+    <button class="pill active" onclick="sf('todas',this)">Todas</button>
+    <button class="pill" onclick="sf('vista',this)">Vistas</button>
+    <button class="pill" onclick="sf('viendo',this)">Viendo</button>
+    <button class="pill" onclick="sf('pendiente',this)">Pendientes</button>
+  </div>
+  <div class="list" id="list"></div>
+</div>
+
+<div class="ov" id="nOv"><div class="pop">
+  <h3 id="nT"></h3>
+  <div class="f"><label>Estado</label><select id="nS"><option value="pendiente">⏳ Pendiente</option><option value="viendo">▶ Viendo</option><option value="vista">✓ Vista</option></select></div>
+  <div class="f"><label>Nota</label><textarea id="nN" placeholder="Ej: quedamos S2 E4…"></textarea></div>
+  <div class="pb"><button class="bc" onclick="cN()">Cancelar</button><button class="bo" onclick="sN()">Guardar</button></div>
+</div></div>
+
+<div class="ov" id="aOv"><div class="pop">
+  <h3>Nueva Serie</h3>
+  <div class="f"><label>Nombre</label><input id="aN" type="text" placeholder="Ej: Dark"></div>
+  <div class="f"><label>Género</label><input id="aG" type="text" placeholder="Ej: Thriller"></div>
+  <div class="f"><label>Estado</label><select id="aS"><option value="pendiente">⏳ Pendiente</option><option value="viendo">▶ Viendo</option><option value="vista">✓ Vista</option></select></div>
+  <div class="f"><label>Nota</label><textarea id="aNo" placeholder="Comentario…"></textarea></div>
+  <div class="pb"><button class="bc" onclick="cA()">Cancelar</button><button class="bo" onclick="confA()">Agregar</button></div>
+</div></div>
+
+<script>
+const SB=[{id:1,name:"Prison Break",genre:"Acción"},{id:2,name:"Riverdale",genre:"Drama"},{id:3,name:"El marginal",genre:"Drama"},{id:4,name:"La casa de papel",genre:"Thriller"},{id:5,name:"Stranger Things",genre:"Ciencia ficción"},{id:6,name:"Élite",genre:"Drama"},{id:7,name:"Vis a vis",genre:"Drama"},{id:8,name:"Sex Education",genre:"Comedia"},{id:9,name:"Arrow",genre:"Acción"},{id:10,name:"The Flash",genre:"Acción"},{id:11,name:"Legends of Tomorrow",genre:"Acción"},{id:12,name:"Daredevil",genre:"Acción"},{id:13,name:"El juego del calamar",genre:"Thriller"},{id:14,name:"Los 100",genre:"Ciencia ficción"},{id:15,name:"Iron Fist",genre:"Acción"},{id:16,name:"Supergirl",genre:"Acción"},{id:17,name:"Lupin",genre:"Thriller"},{id:18,name:"The Defenders",genre:"Acción"},{id:19,name:"Cobra Kai",genre:"Drama"},{id:20,name:"La ley de los audaces",genre:"Drama"},{id:21,name:"Vikingos",genre:"Histórica"},{id:22,name:"The Umbrella Academy",genre:"Ciencia ficción"},{id:23,name:"Outer Banks",genre:"Aventura"},{id:24,name:"Alguien está mintiendo",genre:"Thriller"},{id:25,name:"Breaking Bad",genre:"Drama"},{id:26,name:"The Society",genre:"Drama"},{id:27,name:"Lejos del hogar",genre:"Drama"},{id:28,name:"Bridgerton",genre:"Romance"},{id:29,name:"Caleidoscopio",genre:"Thriller"},{id:30,name:"Ginny & Georgia",genre:"Drama"},{id:31,name:"The Rain",genre:"Ciencia ficción"},{id:32,name:"Trinkets",genre:"Drama"},{id:33,name:"How to Sell Drugs Online",genre:"Comedia"},{id:34,name:"Dinastía",genre:"Drama"},{id:35,name:"Glitch",genre:"Ciencia ficción"},{id:36,name:"El agente nocturno",genre:"Thriller"},{id:37,name:"Chacal",genre:"Thriller"},{id:38,name:"Jóvenes y millonarios",genre:"Drama"},{id:39,name:"Vikingos: Valhalla",genre:"Histórica"},{id:40,name:"El verano en que me enamoré",genre:"Romance"},{id:41,name:"One Tree Hill",genre:"Drama"},{id:42,name:"The Boys",genre:"Acción"},{id:43,name:"Game of Thrones",genre:"Fantasía"},{id:44,name:"Avatar: Aang",genre:"Animación"},{id:45,name:"Avatar: Korra",genre:"Animación"},{id:46,name:"El eternauta",genre:"Ciencia ficción"},{id:47,name:"Berlín",genre:"Thriller"}];
+const KEY='sv4';
+let ud=JSON.parse(localStorage.getItem(KEY)||'null');
+if(!ud){ud={series:{},custom:[],nextId:100};SB.forEach(s=>{ud.series[s.id]={status:'vista',rating:0,note:''};});sv();}
+let flt='todas',aN_id=null;
+function sv(){localStorage.setItem(KEY,JSON.stringify(ud));}
+function all(){return[...SB,...(ud.custom||[])];}
+function gd(id){if(!ud.series[id])ud.series[id]={status:'pendiente',rating:0,note:''};return ud.series[id];}
+function sf(f,el){flt=f;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
+function openNote(id){aN_id=id;const s=all().find(x=>x.id===id),d=gd(id);document.getElementById('nT').textContent=s.name;document.getElementById('nS').value=d.status;document.getElementById('nN').value=d.note||'';document.getElementById('nOv').classList.add('open');setTimeout(()=>document.getElementById('nN').focus(),50);}
+function cN(){document.getElementById('nOv').classList.remove('open');aN_id=null;}
+function sN(){if(!aN_id)return;const d=gd(aN_id);d.note=document.getElementById('nN').value.trim();d.status=document.getElementById('nS').value;sv();cN();render();}
+function openAdd(){['aN','aG','aNo'].forEach(i=>document.getElementById(i).value='');document.getElementById('aS').value='pendiente';document.getElementById('aOv').classList.add('open');setTimeout(()=>document.getElementById('aN').focus(),50);}
+function cA(){document.getElementById('aOv').classList.remove('open');}
+function confA(){const n=document.getElementById('aN').value.trim();if(!n)return;const id=ud.nextId++;ud.custom=ud.custom||[];ud.custom.push({id,name:n,genre:document.getElementById('aG').value.trim()||'Sin género'});ud.series[id]={status:document.getElementById('aS').value,rating:0,note:document.getElementById('aNo').value.trim()};sv();cA();render();}
+function setR(id,v,e){e.stopPropagation();const d=gd(id);d.rating=d.rating===v?0:v;sv();const el=document.querySelector(`[data-sid="${id}"]`);if(el)el.innerHTML=sh(id);}
+function qS(id,v,e){e.stopPropagation();gd(id).status=v;sv();render();}
+function sh(id){const r=gd(id).rating;return[1,2,3,4,5].map(n=>`<span class="star ${r>=n?'on':''}" onclick="setR(${id},${n},event)">★</span>`).join('');}
+function sl(s){return s==='vista'?'✓ Vista':s==='viendo'?'▶ Viendo':'⏳ Pendiente';}
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const srt=document.getElementById('sortSel').value;
+  const a=all();
+  let list=a.filter(s=>{const d=gd(s.id);return(flt==='todas'||d.status===flt)&&(s.name.toLowerCase().includes(q)||s.genre.toLowerCase().includes(q));});
+  if(srt==='name')list.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(srt==='rating')list.sort((a,b)=>gd(b.id).rating-gd(a.id).rating);
+  else if(srt==='status'){const o={viendo:0,vista:1,pendiente:2};list.sort((a,b)=>o[gd(a.id).status]-o[gd(b.id).status]);}
+  const vs=a.filter(s=>gd(s.id).status==='vista').length;
+  const ve=a.filter(s=>gd(s.id).status==='viendo').length;
+  const pe=a.filter(s=>gd(s.id).status==='pendiente').length;
+  const rt=a.filter(s=>gd(s.id).rating>0);
+  const avg=rt.length?(rt.reduce((x,s)=>x+gd(s.id).rating,0)/rt.length).toFixed(1):'—';
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="stat-n">${a.length}</div><div class="stat-l">Total</div></div>
+    <div class="stat"><div class="stat-n g">${vs}</div><div class="stat-l">Vistas</div></div>
+    <div class="stat"><div class="stat-n b">${ve}</div><div class="stat-l">Viendo</div></div>
+    <div class="stat"><div class="stat-n">${pe}</div><div class="stat-l">Pendientes</div></div>
+    <div class="stat"><div class="stat-n a">${avg!=='—'?avg+' ★':'—'}</div><div class="stat-l">Promedio</div></div>
+  `;
+  if(!list.length){document.getElementById('list').innerHTML='<div class="empty">Sin resultados.</div>';return;}
+  document.getElementById('list').innerHTML=list.map((s,i)=>{
+    const d=gd(s.id);
+    const nl=d.note?d.note.slice(0,13)+(d.note.length>13?'…':''):'+ nota';
+    return`<div class="row" style="animation-delay:${Math.min(i,20)*0.018}s">
+      <span class="row-n">${s.id}</span>
+      <div><div class="row-name">${s.name}</div><div class="row-genre">${s.genre}</div></div>
+      <div class="stars" data-sid="${s.id}">${sh(s.id)}</div>
+      <button class="note-btn ${d.note?'has':''}" onclick="openNote(${s.id})">${nl}</button>
+      <div class="sw"><span class="sbadge ${d.status}">${sl(d.status)}</span>
+        <select class="ssh" onchange="qS(${s.id},this.value,event)" onclick="event.stopPropagation()">
+          <option value="pendiente" ${d.status==='pendiente'?'selected':''}>⏳ Pendiente</option>
+          <option value="viendo" ${d.status==='viendo'?'selected':''}>▶ Viendo</option>
+          <option value="vista" ${d.status==='vista'?'selected':''}>✓ Vista</option>
+        </select></div>
+    </div>`;
+  }).join('');
+}
+['nOv','aOv'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');aN_id=null;}});});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.ov.open').forEach(p=>p.classList.remove('open'));aN_id=null;}});
+render();
+</script>
+</body>
+</html>
